@@ -361,6 +361,7 @@ tl-wr703n |\
 tube2h |\
 wndap360 |\
 mynet-rext |\
+zsun-sdreader |\
 wp543)
 	ucidef_set_interface_lan "eth0"
 	;;

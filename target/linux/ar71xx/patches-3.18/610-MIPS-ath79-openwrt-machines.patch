@@ -1,6 +1,6 @@
 --- a/arch/mips/ath79/machtypes.h
 +++ b/arch/mips/ath79/machtypes.h
-@@ -16,22 +16,195 @@
+@@ -16,22 +16,196 @@
  
  enum ath79_mach_type {
  	ATH79_MACH_GENERIC = 0,
@@ -193,6 +193,7 @@
 +	ATH79_MACH_WZR_450HP2,		/* Buffalo WZR-450HP2 */
 +	ATH79_MACH_ZCN_1523H_2,		/* Zcomax ZCN-1523H-2-xx */
 +	ATH79_MACH_ZCN_1523H_5,		/* Zcomax ZCN-1523H-5-xx */
++	ATH79_MACH_ZSUN_SDREADER,	/* Zsun WiFi SD Card Reader */
  };
  
  #endif /* _ATH79_MACHTYPE_H */
@@ -1328,7 +1329,7 @@
  
  config ATH79_MACH_UBNT_XM
  	bool "Ubiquiti Networks XM/UniFi boards"
-@@ -83,6 +1115,97 @@ config ATH79_MACH_UBNT_XM
+@@ -83,6 +1115,107 @@ config ATH79_MACH_UBNT_XM
  	  Say 'Y' here if you want your kernel to support the
  	  Ubiquiti Networks XM (rev 1.0) board.
  
@@ -1423,10 +1424,20 @@
 +	select ATH79_DEV_USB
 +	select ATH79_NVRAM
 +
++config ATH79_MACH_ZSUN_SDREADER
++	bool "ZSUN WiFi SD Card Reader"
++	select SOC_AR933X
++	select ATH79_DEV_ETH
++	select ATH79_DEV_GPIO_BUTTONS
++	select ATH79_DEV_LEDS_GPIO
++	select ATH79_DEV_M25P80
++	select ATH79_DEV_USB
++	select ATH79_DEV_WMAC
++
  endmenu
  
  config SOC_AR71XX
-@@ -124,7 +1247,10 @@ config ATH79_DEV_DSA
+@@ -124,7 +1257,10 @@ config ATH79_DEV_DSA
  config ATH79_DEV_ETH
  	def_bool n
  
@@ -1438,7 +1449,7 @@
  	def_bool n
  
  config ATH79_DEV_GPIO_BUTTONS
-@@ -154,6 +1280,11 @@ config ATH79_PCI_ATH9K_FIXUP
+@@ -154,6 +1290,11 @@ config ATH79_PCI_ATH9K_FIXUP
  	def_bool n
  
  config ATH79_ROUTERBOOT
@@ -1452,7 +1463,7 @@
  endif
 --- a/arch/mips/ath79/Makefile
 +++ b/arch/mips/ath79/Makefile
-@@ -38,9 +38,124 @@ obj-$(CONFIG_ATH79_ROUTERBOOT)		+= route
+@@ -38,9 +38,126 @@ obj-$(CONFIG_ATH79_ROUTERBOOT)		+= route
  #
  # Machines
  #
@@ -1577,6 +1588,8 @@
 +obj-$(CONFIG_ATH79_MACH_ZCN_1523H)	+= mach-zcn-1523h.o
 +obj-$(CONFIG_ATH79_MACH_CARAMBOLA2)	+= mach-carambola2.o
 +obj-$(CONFIG_ATH79_MACH_NBG6716)	+= mach-nbg6716.o
++obj-$(CONFIG_ATH79_MACH_ZSUN_SDREADER)	+= mach-zsun-sdreader.o
++
 --- a/arch/mips/ath79/prom.c
 +++ b/arch/mips/ath79/prom.c
 @@ -180,6 +180,12 @@ void __init prom_init(void)
